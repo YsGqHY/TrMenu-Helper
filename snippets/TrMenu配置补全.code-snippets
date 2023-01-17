@@ -1,0 +1,111 @@
+{
+	"创建菜单注释模板": {	
+		"prefix": ["开始 带注释", "start with comment"],
+		"body": [
+			"# 输入菜单标题11",
+			"Title: '$1'",
+			"",
+			"# 菜单布局",
+			"# 每行最多 9 个按钮",
+			"# 每页最多填写 6 行",
+			"Layout:",
+			"# 输入按钮编号",
+			"  - '$2'",
+			"",
+			"Buttons:",
+			"  '$2':",
+			"    display:",
+			"      # 配置按钮材质",
+			"      mats: '$3'",
+			"      # 配置按钮名字",
+			"      name: '$4'"
+		],
+		"description": "附带注释的菜单模板"
+	},
+	"创建菜单模板": {	
+		"prefix": ["开始", "start"],
+		"body": [
+			"Title: '$1'",
+			"",
+			"Layout:",
+			"  - '$2'",
+			"",
+			"Icons:",
+			"  '$2':",
+			"    display:",
+			"      mats: '$3'",
+			"      name: '$4'"
+		],
+		"description": "菜单模板"
+	},
+	"创建新图标": {	
+		"prefix": ["图标", "icon"],
+		"body": [
+			"'$2':",
+			"  display:",
+			"    mats: '$3'",
+			"    name: '$4'",
+			"    lore:",
+			"      - '$0'"
+		],
+		"description": "条件格式"
+	},
+	"创建图标动作": {	
+		"prefix": ["动作", "actions"],
+		"body": [
+			"actions:",
+			"  ${1|left,right,|}:",
+			"    $0"
+		],
+		"description": "条件格式"
+	},
+	"子图标附带条件": {	
+		"prefix": ["icons", "子图标", "子按钮"],
+		"body": [
+			"icons:",
+			"  - condition: "
+		],
+		"description": "子图标"
+	},
+	"选择图标条件": {	
+		"prefix": ["select_condition", "选择条件"],
+		"body": [
+			"- condition: '${1|check papi,points,money,perm|} $0'"
+		],
+		"description": "附带常用条件语句"
+	},
+	"创建图标条件": {	
+		"prefix": ["condition", "条件"],
+		"body": [
+			"- condition: "
+		],
+		"description": "条件格式"
+	},
+	"Kether语句判断变量": {	
+		"prefix": ["check papi", "判断变量"],
+		"body": [
+			"'check papi \"%$1%\" $2 $3'"
+		],
+		"description": "变量判断"
+	},
+	"Kether语句判断Chemdah点数": {	
+		"prefix": ["check profile data"],
+		"body": [
+			"'check profile data \"$1\" $2 $3'"
+		],
+		"description": "变量判断"
+	},
+	"创建JavaScript模块": {	
+		"prefix": ["functions", "Functions"],
+		"body": [
+			"Functions:",
+			"  $1:",
+			"    $2: |-",
+			"      function get(){",
+			"        $0",
+			"      }",
+			"      get()",
+		],
+		"description": "TrMenu内置JavaScript模块"
+	},
+}

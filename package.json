@@ -1,0 +1,21 @@
+{
+  "name": "trmenu-helper",
+  "displayName": "TrMenu-Helper",
+  "description": "TrMenu配置补全",
+  "publisher": "hhhhhy",
+  "version": "0.0.3",
+  "engines": {
+    "vscode": "^1.73.0"
+  },
+  "categories": [
+    "Snippets"
+  ],
+  "contributes": {
+    "snippets": [
+      {
+        "language": "yaml",
+        "path": "./snippets/TrMenu配置补全.code-snippets"
+      }
+    ]
+  }
+}

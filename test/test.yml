@@ -1,0 +1,25 @@
+Title: '123'
+
+Layout:
+  - '1'
+
+Icons:
+  '1':
+    display:
+      mats: 'stone'
+      name: '2'
+  '2':
+    display:
+      mats: 'stone'
+      name: '123'
+      lore:
+        - '3'
+
+
+Functions:
+  name:
+    get: |-
+      function get(){
+        return
+      }
+      get()
