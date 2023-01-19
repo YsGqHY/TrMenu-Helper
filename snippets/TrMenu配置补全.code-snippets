@@ -48,16 +48,16 @@
 			"    lore:",
 			"      - '$0'"
 		],
-		"description": "条件格式"
+		"description": "创建新图标"
 	},
 	"创建图标动作": {	
 		"prefix": ["动作", "actions"],
 		"body": [
 			"actions:",
-			"  ${1|left,right,|}:",
+			"  ${1|left,right|}:",
 			"    $0"
 		],
-		"description": "条件格式"
+		"description": "创建图标动作"
 	},
 	"子图标附带条件": {	
 		"prefix": ["icons", "子图标", "子按钮"],
@@ -79,33 +79,82 @@
 		"body": [
 			"- condition: "
 		],
-		"description": "条件格式"
+		"description": "创建图标条件"
+	},
+	"创建条件动作": {	
+		"prefix": ["condition", "条件"],
+		"body": [
+			"- condition: ",
+			"  actions:",
+			"    $0",
+			"  deny:",
+			"    ",
+		],
+		"description": "创建条件动作"
 	},
 	"Kether语句判断变量": {	
 		"prefix": ["check papi", "判断变量"],
 		"body": [
-			"'check papi \"%$1%\" $2 $3'"
+			"'check papi \"%$1%\" ${2|==,!=,<,<=,>,>=,=?|} $3'"
 		],
-		"description": "变量判断"
+		"description": "Kether语句判断变量"
 	},
 	"Kether语句判断Chemdah点数": {	
 		"prefix": ["check profile data"],
 		"body": [
-			"'check profile data \"$1\" $2 $3'"
+			"'check profile data \"$1\" ${2|==,!=,<,<=,>,>=,=?|} $3'"
 		],
-		"description": "变量判断"
+		"description": "Kether语句判断Chemdah点数"
+	},
+	"TrMenu私有语句判断金币": {	
+		"prefix": ["money", "金币"],
+		"body": [
+			"'money *$1'"
+		],
+		"description": "TrMenu私有语句判断金币"
+	},
+	"TrMenu私有语句判断点券": {	
+		"prefix": ["points", "点券"],
+		"body": [
+			"'points *$1'"
+		],
+		"description": "TrMenu私有语句判断点券"
 	},
 	"创建JavaScript模块": {	
 		"prefix": ["functions", "Functions"],
 		"body": [
 			"Functions:",
+			"  # ${$1.$2}",
 			"  $1:",
 			"    $2: |-",
 			"      function get(){",
 			"        $0",
+			"        return",
 			"      }",
 			"      get()",
 		],
 		"description": "TrMenu内置JavaScript模块"
+	},
+	"创建JavaScript方法": {	
+		"prefix": ["funs", "Funs"],
+		"body": [
+			"# ${$1}",
+			"  $1: |-",
+			"    function get(){",
+			"      $0",
+			"      return",
+			"    }",
+			"    get()",
+		],
+		"description": "创建JavaScript方法"
+	},
+	"创建菜单事件": {	
+		"prefix": ["events", "Events"],
+		"body": [
+			"Events:",
+			"  ${1|open,close|}:",
+			"    $0",
+		],
+		"description": "创建菜单事件"
 	},
 }

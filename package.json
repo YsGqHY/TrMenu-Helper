@@ -3,13 +3,19 @@
   "displayName": "TrMenu-Helper",
   "description": "TrMenu配置补全",
   "publisher": "hhhhhy",
-  "version": "0.0.4",
+  "version": "0.0.5",
+  "keywords": ["trmenu", "kether", "taboolib"],
+  "icon": "images/icon.png",
   "engines": {
     "vscode": "^1.70.0"
   },
   "categories": [
     "Snippets"
   ],
+  "repository": {
+    "type": "git",
+    "url" : "https://github.com/YsGqHY/TrMenu-Helper.git"
+  },
   "contributes": {
     "snippets": [
       {
