@@ -1,0 +1,15 @@
+# TrMenu Helper
+
+# AI 协作文档，不入仓
+CLAUDE.md
+
+# 本地测试沙盒
+test/
+
+# 扩展打包产物
+*.vsix
+
+# 编辑器/系统缓存
+.vscode-test/
+.DS_Store
+Thumbs.db
