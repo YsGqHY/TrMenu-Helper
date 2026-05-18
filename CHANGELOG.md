@@ -2,6 +2,19 @@
 
 ---
 
+## v0.1.0
+
+* [+] 适配最新版 TrMenu 配置字段，将菜单与图标模板更新为 `Icons` / `material` 写法
+* [+] 增加 Dialog 菜单模板与 Dialog Body、Action、变量相关代码补全
+* [+] 增加 Options、Bindings、Tasks、完整图标显示属性等菜单配置补全
+* [+] 增加常用 TrMenu 动作代码补全，覆盖菜单、消息、命令、数据、经济、脚本等场景
+* [+] 增加目录检测，仅在 `**/plugins/TrMenu/menus/**` 下编写 YAML 时启用 TrMenu 补全
+* [+] 增加 TrMenu 菜单配置亮色提示，仅在目标菜单目录下高亮核心配置键、图标显示键、动作类型与 Dialog 节点
+* [+] 增加常见配置合法性检测，对错误的图标 actions 类型、写错层级的 name/lore/material、Dialog 缺少 Pages 等问题显示红色波浪线
+* [+] 增加图标 actions 缺少点击类型分组检测，对 actions 直接接列表的写法显示红色波浪线
+
+---
+
 
 ## v0.0.5
 

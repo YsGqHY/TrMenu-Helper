@@ -1,28 +1,27 @@
 {
-	"创建菜单注释模板": {	
+	"创建菜单注释模板": {
 		"prefix": ["开始 带注释", "start with comment"],
 		"body": [
-			"# 输入菜单标题11",
+			"# 菜单标题",
 			"Title: '$1'",
 			"",
 			"# 菜单布局",
-			"# 每行最多 9 个按钮",
-			"# 每页最多填写 6 行",
+			"# 每行最多 9 个按钮，每页最多 6 行",
 			"Layout:",
-			"# 输入按钮编号",
 			"  - '$2'",
 			"",
-			"Buttons:",
+			"# 图标配置",
+			"Icons:",
 			"  '$2':",
 			"    display:",
 			"      # 配置按钮材质",
-			"      mats: '$3'",
+			"      material: '$3'",
 			"      # 配置按钮名字",
 			"      name: '$4'"
 		],
-		"description": "附带注释的菜单模板"
+		"description": "附带注释的 TrMenu 菜单模板"
 	},
-	"创建菜单模板": {	
+	"创建菜单模板": {
 		"prefix": ["开始", "start"],
 		"body": [
 			"Title: '$1'",
@@ -33,128 +32,716 @@
 			"Icons:",
 			"  '$2':",
 			"    display:",
-			"      mats: '$3'",
+			"      material: '$3'",
 			"      name: '$4'"
 		],
-		"description": "菜单模板"
+		"description": "TrMenu 基础菜单模板"
 	},
-	"创建新图标": {	
+	"创建完整传统菜单模板": {
+		"prefix": ["trmenu menu", "传统菜单", "完整菜单"],
+		"body": [
+			"Title: '$1'",
+			"Title-Update: 80",
+			"",
+			"Layout:",
+			"  - '#########'",
+			"  - '    A    '",
+			"  - '#########'",
+			"",
+			"Options:",
+			"  Arguments: true",
+			"  Default-Arguments: []",
+			"  Default-Layout: 0",
+			"  Hide-Player-Inventory: false",
+			"  Min-Click-Delay: 200",
+			"  Command-Fake-Op: true",
+			"",
+			"Bindings:",
+			"  Commands:",
+			"    - '(?i)$2'",
+			"",
+			"Events:",
+			"  Open:",
+			"    - 'sound: BLOCK_CHEST_OPEN-1-1'",
+			"  Close:",
+			"    - 'sound: BLOCK_CHEST_CLOSE-1-1'",
+			"",
+			"Icons:",
+			"  '#':",
+			"    display:",
+			"      material: GRAY_STAINED_GLASS_PANE",
+			"      name: '&7'",
+			"  A:",
+			"    display:",
+			"      material: '$3'",
+			"      name: '$4'",
+			"      lore:",
+			"        - '$0'",
+			"    actions:",
+			"      all:",
+			"        - 'tell: &aClicked'"
+		],
+		"description": "包含 Options、Bindings、Events、Icons 的传统菜单模板"
+	},
+	"创建Dialog通知菜单模板": {
+		"prefix": ["dialog notice", "Dialog通知", "对话通知菜单"],
+		"body": [
+			"Title: '$1'",
+			"Render-Type: DIALOG",
+			"",
+			"Dialog:",
+			"  Min-Version: '1.21.6'",
+			"  Fallback-Menu: '$2'",
+			"  Allow-Esc-Close: true",
+			"  External-Title: '$3'",
+			"  Pages:",
+			"    - Id: '$4'",
+			"      Type: 'notice'",
+			"      Title: '$1'",
+			"      Body:",
+			"        - Id: 'desc'",
+			"          Renderer: 'plain_message'",
+			"          Width: 320",
+			"          Text:",
+			"            - '$5'",
+			"      Actions:",
+			"        - Id: 'confirm'",
+			"          Label: '&a确认'",
+			"          Width: 160",
+			"          Execute:",
+			"            - 'tell: &a已确认'",
+			"            - 'close'",
+			"$0"
+		],
+		"description": "Minecraft 1.21.6+ Dialog notice 菜单模板"
+	},
+	"创建Dialog确认菜单模板": {
+		"prefix": ["dialog confirmation", "Dialog确认", "对话确认菜单"],
+		"body": [
+			"Title: '$1'",
+			"Render-Type: DIALOG",
+			"",
+			"Dialog:",
+			"  Min-Version: '1.21.6'",
+			"  Fallback-Menu: '$2'",
+			"  Allow-Esc-Close: false",
+			"  External-Title: '$3'",
+			"  Pages:",
+			"    - Id: '$4'",
+			"      Type: 'confirmation'",
+			"      Title: '$1'",
+			"      Body:",
+			"        - Id: 'warning'",
+			"          Renderer: 'plain_message'",
+			"          Width: 320",
+			"          Text:",
+			"            - '$5'",
+			"      Actions:",
+			"        - Id: 'confirm'",
+			"          Label: '&a确认'",
+			"          Width: 160",
+			"          Execute:",
+			"            - '$6'",
+			"            - 'close'",
+			"        - Id: 'cancel'",
+			"          Label: '&c取消'",
+			"          Width: 160",
+			"          Execute:",
+			"            - 'close'",
+			"$0"
+		],
+		"description": "Minecraft 1.21.6+ Dialog confirmation 菜单模板"
+	},
+	"创建Dialog布局菜单模板": {
+		"prefix": ["dialog layout", "Dialog布局", "对话布局菜单"],
+		"body": [
+			"Title: '$1'",
+			"Render-Type: DIALOG",
+			"",
+			"Dialog:",
+			"  Min-Version: '1.21.6'",
+			"  Fallback-Menu: '$2'",
+			"  Allow-Esc-Close: true",
+			"  External-Title: '$3'",
+			"  Compiler:",
+			"    Strategy: AUTO",
+			"    Unsupported-Policy: FALLBACK_MENU",
+			"    Grid-Columns: 12",
+			"    Content-Max-Width: 360",
+			"    Mixin-Assist: false",
+			"  Pages:",
+			"    - Id: '$4'",
+			"      Type: 'multi_action'",
+			"      Title: '$1'",
+			"      Exit-Action:",
+			"        Id: 'exit'",
+			"        Label: '&c关闭'",
+			"        Width: 120",
+			"        Execute:",
+			"          - 'close'",
+			"      Layout:",
+			"        Row-Gap: 1",
+			"        Sections:",
+			"          header:",
+			"            row: 1",
+			"          content:",
+			"            row: 2",
+			"          footer:",
+			"            row: 6",
+			"      Widgets:",
+			"        intro:",
+			"          kind: text",
+			"          anchor: header",
+			"          row: 1",
+			"          col-start: 1",
+			"          col-span: 12",
+			"          text:",
+			"            - '$5'",
+			"        submit:",
+			"          kind: action",
+			"          anchor: footer",
+			"          row: 1",
+			"          col-start: 1",
+			"          col-span: 12",
+			"          label: '&a确认'",
+			"          execute:",
+			"            - '$6'",
+			"            - 'close'",
+			"$0"
+		],
+		"description": "Minecraft 1.21.6+ Dialog multi_action 布局模板"
+	},
+	"创建Options配置": {
+		"prefix": ["options", "Options", "菜单选项"],
+		"body": [
+			"Options:",
+			"  Arguments: ${1|true,false|}",
+			"  Default-Arguments: []",
+			"  Default-Layout: 0",
+			"  Free-Slots:",
+			"    - '${2:71-73}'",
+			"  Hide-Player-Inventory: ${3|false,true|}",
+			"  Min-Click-Delay: ${4:200}",
+			"  Depend-Expansions: ['${5:player}']",
+			"  Command-Fake-Op: ${6|true,false|}",
+			"$0"
+		],
+		"description": "创建 TrMenu Options 配置"
+	},
+	"创建Bindings配置": {
+		"prefix": ["bindings", "Bindings", "菜单绑定"],
+		"body": [
+			"Bindings:",
+			"  Commands:",
+			"    - '(?i)$1'",
+			"  Items:",
+			"    - 'material:${2:COMPASS}'",
+			"$0"
+		],
+		"description": "创建命令与物品绑定配置"
+	},
+	"创建Tasks周期任务": {
+		"prefix": ["tasks", "Tasks", "周期任务"],
+		"body": [
+			"Tasks:",
+			"  $1:",
+			"    period: ${2:20}",
+			"    task:",
+			"      - condition: '$3'",
+			"        actions:",
+			"          - '$0'"
+		],
+		"description": "创建菜单打开期间执行的周期任务"
+	},
+	"创建新图标": {
 		"prefix": ["图标", "icon"],
 		"body": [
-			"'$2':",
+			"'$1':",
 			"  display:",
-			"    mats: '$3'",
-			"    name: '$4'",
+			"    material: '$2'",
+			"    name: '$3'",
 			"    lore:",
 			"      - '$0'"
 		],
 		"description": "创建新图标"
 	},
-	"创建图标动作": {	
+	"创建完整图标": {
+		"prefix": ["icon full", "完整图标"],
+		"body": [
+			"'$1':",
+			"  update: ${2:20}",
+			"  display:",
+			"    material: '$3'",
+			"    name: '$4'",
+			"    lore:",
+			"      - '$5'",
+			"    amount: '${6:1}'",
+			"    shiny: '${7|false,true|}'",
+			"  actions:",
+			"    ${8|all,left,right,shift_left,shift_right,offhand,number_key_1,double_click,drop|}:",
+			"      - '$0'"
+		],
+		"description": "创建包含更新周期、显示和动作的图标"
+	},
+	"创建图标显示属性": {
+		"prefix": ["display full", "显示属性", "图标显示"],
+		"body": [
+			"display:",
+			"  material: '$1'",
+			"  name: '$2'",
+			"  lore:",
+			"    - '$3'",
+			"  amount: '${4:1}'",
+			"  shiny: '${5|false,true|}'",
+			"  flags:",
+			"    - '${6:HIDE_ATTRIBUTES}'",
+			"  enchant:",
+			"    ${7:DURABILITY}: ${8:1}",
+			"  nbt:",
+			"    ${9:key}: '${10:value}'",
+			"  unbreakable: ${11|false,true|}",
+			"  data: ${12:0}",
+			"  item_model: '$13'",
+			"  tooltip: '$14'",
+			"  hide_tooltip: ${15|false,true|}",
+			"$0"
+		],
+		"description": "创建最新版 TrMenu 图标显示属性"
+	},
+	"创建图标动作": {
 		"prefix": ["动作", "actions"],
 		"body": [
 			"actions:",
-			"  ${1|left,right|}:",
-			"    $0"
+			"  ${1|all,left,right,shift_left,shift_right,offhand,number_key,number_key_1,number_key_2,number_key_3,number_key_4,number_key_5,number_key_6,number_key_7,number_key_8,number_key_9,middle,drop,control_drop,double_click|}:",
+			"    - '$0'"
 		],
-		"description": "创建图标动作"
+		"description": "创建图标点击动作"
 	},
-	"子图标附带条件": {	
+	"子图标附带条件": {
 		"prefix": ["icons", "子图标", "子按钮"],
 		"body": [
 			"icons:",
-			"  - condition: "
+			"  - condition: '$1'",
+			"    priority: ${2:0}",
+			"    inherit: ${3|true,false|}",
+			"    display:",
+			"      name: '$4'",
+			"      lore:",
+			"        - '$5'",
+			"    actions:",
+			"      ${6|all,left,right|}:",
+			"        - '$0'"
 		],
-		"description": "子图标"
+		"description": "创建带条件、优先级、继承和动作的子图标"
 	},
-	"选择图标条件": {	
+	"选择图标条件": {
 		"prefix": ["select_condition", "选择条件"],
 		"body": [
-			"- condition: '${1|check papi,points,money,perm|} $0'"
+			"- condition: '${1|perm,money,points,check papi,js:,jexl:|} $0'"
 		],
 		"description": "附带常用条件语句"
 	},
-	"创建图标条件": {	
+	"创建图标条件": {
 		"prefix": ["condition", "条件"],
 		"body": [
-			"- condition: "
+			"- condition: '$0'"
 		],
 		"description": "创建图标条件"
 	},
-	"创建条件动作": {	
-		"prefix": ["condition", "条件"],
+	"创建条件动作": {
+		"prefix": ["condition action", "条件动作"],
 		"body": [
-			"- condition: ",
+			"- condition: '$1'",
 			"  actions:",
-			"    $0",
+			"    - '$2'",
 			"  deny:",
-			"    ",
+			"    - '$0'"
 		],
-		"description": "创建条件动作"
+		"description": "创建条件动作组"
 	},
-	"Kether语句判断变量": {	
+	"Kether语句判断变量": {
 		"prefix": ["check papi", "判断变量"],
 		"body": [
 			"'check papi \"%$1%\" ${2|==,!=,<,<=,>,>=,=?|} $3'"
 		],
 		"description": "Kether语句判断变量"
 	},
-	"Kether语句判断Chemdah点数": {	
+	"Kether语句判断Chemdah点数": {
 		"prefix": ["check profile data"],
 		"body": [
 			"'check profile data \"$1\" ${2|==,!=,<,<=,>,>=,=?|} $3'"
 		],
 		"description": "Kether语句判断Chemdah点数"
 	},
-	"TrMenu私有语句判断金币": {	
+	"TrMenu私有语句判断金币": {
 		"prefix": ["money", "金币"],
 		"body": [
 			"'money *$1'"
 		],
 		"description": "TrMenu私有语句判断金币"
 	},
-	"TrMenu私有语句判断点券": {	
+	"TrMenu私有语句判断点券": {
 		"prefix": ["points", "点券"],
 		"body": [
 			"'points *$1'"
 		],
 		"description": "TrMenu私有语句判断点券"
 	},
-	"创建JavaScript模块": {	
+	"创建JavaScript模块": {
 		"prefix": ["functions", "Functions"],
 		"body": [
 			"Functions:",
-			"  # ${$1.$2}",
-			"  $1:",
-			"    $2: |-",
-			"      function get(){",
-			"        $0",
-			"        return",
-			"      }",
-			"      get()",
-		],
-		"description": "TrMenu内置JavaScript模块"
-	},
-	"创建JavaScript方法": {	
-		"prefix": ["funs", "Funs"],
-		"body": [
-			"# ${$1}",
 			"  $1: |-",
 			"    function get(){",
 			"      $0",
 			"      return",
 			"    }",
-			"    get()",
+			"    get()"
 		],
-		"description": "创建JavaScript方法"
+		"description": "TrMenu 内置 JavaScript 模块"
 	},
-	"创建菜单事件": {	
+	"创建JavaScript方法": {
+		"prefix": ["funs", "Funs"],
+		"body": [
+			"$1: |-",
+			"  function get(){",
+			"    $0",
+			"    return",
+			"  }",
+			"  get()"
+		],
+		"description": "创建 JavaScript 方法"
+	},
+	"创建菜单事件": {
 		"prefix": ["events", "Events"],
 		"body": [
 			"Events:",
-			"  ${1|open,close|}:",
-			"    $0",
+			"  ${1|Open,Close,Click|}:",
+			"    - '$0'"
 		],
 		"description": "创建菜单事件"
 	},
+	"创建Dialog文本": {
+		"prefix": ["dialog text", "Dialog文本"],
+		"body": [
+			"- Id: '$1'",
+			"  Renderer: 'plain_message'",
+			"  Width: ${2:320}",
+			"  Text:",
+			"    - '$0'"
+		],
+		"description": "创建 Dialog plain_message 元素"
+	},
+	"创建Dialog物品": {
+		"prefix": ["dialog item", "Dialog物品"],
+		"body": [
+			"- Id: '$1'",
+			"  Renderer: 'item'",
+			"  Width: ${2:320}",
+			"  Display:",
+			"    material: '$3'",
+			"    name: '$4'",
+			"    lore:",
+			"      - '$0'"
+		],
+		"description": "创建 Dialog item 元素"
+	},
+	"创建Dialog输入框": {
+		"prefix": ["dialog input", "Dialog输入"],
+		"body": [
+			"- Id: '$1'",
+			"  Renderer: 'input'",
+			"  Width: ${2:320}",
+			"  Label: '$3'",
+			"  Placeholder: '$4'",
+			"  Max-Length: ${5:16}",
+			"$0"
+		],
+		"description": "创建 Dialog input 元素，可通过 %trmenu_dialog_input_<id>% 读取"
+	},
+	"创建Dialog布尔开关": {
+		"prefix": ["dialog boolean", "Dialog开关"],
+		"body": [
+			"- Id: '$1'",
+			"  Renderer: 'boolean'",
+			"  Width: ${2:320}",
+			"  Label: '$3'",
+			"  Initial: ${4|false,true|}",
+			"$0"
+		],
+		"description": "创建 Dialog boolean 元素，可通过 %trmenu_dialog_boolean_<id>% 读取"
+	},
+	"创建Dialog单选": {
+		"prefix": ["dialog single_option", "Dialog单选"],
+		"body": [
+			"- Id: '$1'",
+			"  Renderer: 'single_option'",
+			"  Width: ${2:320}",
+			"  Label: '$3'",
+			"  Default-Value: '$4'",
+			"  Options:",
+			"    - Id: '$4'",
+			"      Title: '$5'",
+			"      Description: '$0'"
+		],
+		"description": "创建 Dialog single_option 元素"
+	},
+	"创建Dialog多选": {
+		"prefix": ["dialog multi_option", "Dialog多选"],
+		"body": [
+			"- Id: '$1'",
+			"  Renderer: 'multi_option'",
+			"  Width: ${2:320}",
+			"  Label: '$3'",
+			"  Default-Value:",
+			"    - '$4'",
+			"  Options:",
+			"    - Id: '$4'",
+			"      Title: '$5'",
+			"      Description: '$0'"
+		],
+		"description": "创建 Dialog multi_option 元素"
+	},
+	"创建Dialog数值滑块": {
+		"prefix": ["dialog number_range", "Dialog数值"],
+		"body": [
+			"- Id: '$1'",
+			"  Renderer: 'number_range'",
+			"  Width: ${2:320}",
+			"  Label: '$3'",
+			"  Min: ${4:1}",
+			"  Max: ${5:64}",
+			"  Step: ${6:1}",
+			"  Default-Value: '${7:1}'",
+			"$0"
+		],
+		"description": "创建 Dialog number_range 元素"
+	},
+	"创建Dialog按钮": {
+		"prefix": ["dialog action", "Dialog按钮"],
+		"body": [
+			"- Id: '$1'",
+			"  Label: '$2'",
+			"  Width: ${3:160}",
+			"  Execute:",
+			"    - '$4'",
+			"  Deny:",
+			"    - '$0'"
+		],
+		"description": "创建 Dialog Actions 按钮"
+	},
+	"创建Dialog退出按钮": {
+		"prefix": ["dialog exit", "Dialog退出"],
+		"body": [
+			"Exit-Action:",
+			"  Id: '$1'",
+			"  Label: '$2'",
+			"  Width: ${3:120}",
+			"  Execute:",
+			"    - 'close'",
+			"$0"
+		],
+		"description": "创建 Dialog Exit-Action"
+	},
+	"Dialog输入变量": {
+		"prefix": ["dialog var input", "Dialog输入变量"],
+		"body": [
+			"%trmenu_dialog_input_$1%"
+		],
+		"description": "Dialog input 输入值变量"
+	},
+	"Dialog选项变量": {
+		"prefix": ["dialog var option", "Dialog选项变量"],
+		"body": [
+			"%trmenu_dialog_option_$1%"
+		],
+		"description": "Dialog single_option 或 multi_option 选项变量"
+	},
+	"Dialog布尔变量": {
+		"prefix": ["dialog var boolean", "Dialog布尔变量"],
+		"body": [
+			"%trmenu_dialog_boolean_$1%"
+		],
+		"description": "Dialog boolean 开关变量"
+	},
+	"动作发送消息": {
+		"prefix": ["act tell", "tell动作"],
+		"body": ["'tell: $0'"],
+		"description": "向玩家发送消息"
+	},
+	"动作强制聊天": {
+		"prefix": ["act chat", "chat动作"],
+		"body": ["'chat: $0'"],
+		"description": "让玩家发送聊天消息"
+	},
+	"动作播放音效": {
+		"prefix": ["act sound", "sound动作"],
+		"body": ["'sound: ${1:BLOCK_NOTE_BLOCK_PLING}-${2:1}-${3:1}'"],
+		"description": "向玩家播放音效"
+	},
+	"动作发送Title": {
+		"prefix": ["act title", "title动作"],
+		"body": ["'title: `$1` `$2` ${3:15} ${4:20} ${5:15}'"],
+		"description": "向玩家展示 Title"
+	},
+	"动作发送Actionbar": {
+		"prefix": ["act actionbar", "actionbar动作"],
+		"body": ["'actionbar: $0'"],
+		"description": "向玩家展示 Actionbar"
+	},
+	"动作发送Json": {
+		"prefix": ["act json", "json动作"],
+		"body": ["'json: $0'"],
+		"description": "发送 Tellraw/JSON 消息"
+	},
+	"动作玩家命令": {
+		"prefix": ["act command", "command动作"],
+		"body": ["'command: $0'"],
+		"description": "以玩家身份执行命令"
+	},
+	"动作OP命令": {
+		"prefix": ["act op", "op动作"],
+		"body": ["'op: $0'"],
+		"description": "以 OP 身份执行命令"
+	},
+	"动作控制台命令": {
+		"prefix": ["act console", "console动作"],
+		"body": ["'console: $0'"],
+		"description": "以控制台身份执行命令"
+	},
+	"动作跨服传送": {
+		"prefix": ["act server", "server动作"],
+		"body": ["'server: $0'"],
+		"description": "跨服传送到指定服务器"
+	},
+	"动作打开菜单": {
+		"prefix": ["act open", "open动作"],
+		"body": ["'open: ${1:Menu}${2::0}'"],
+		"description": "打开菜单，可追加页码或参数"
+	},
+	"动作静默打开菜单": {
+		"prefix": ["act force-open", "force-open动作"],
+		"body": ["'force-open: ${1:Menu}${2::0}'"],
+		"description": "静默打开菜单，不触发 Events.Open"
+	},
+	"动作关闭菜单": {
+		"prefix": ["act close", "close动作"],
+		"body": ["'close'"],
+		"description": "关闭菜单"
+	},
+	"动作静默关闭菜单": {
+		"prefix": ["act force-close", "force-close动作"],
+		"body": ["'force-close'"],
+		"description": "静默关闭菜单，不触发 Events.Close"
+	},
+	"动作切换页码": {
+		"prefix": ["act page", "page动作"],
+		"body": ["'page: $0'"],
+		"description": "切换菜单页码"
+	},
+	"动作设置标题": {
+		"prefix": ["act set-title", "set-title动作"],
+		"body": ["'set-title: $0'"],
+		"description": "设置容器标题"
+	},
+	"动作设置参数": {
+		"prefix": ["act set-arguments", "set-arguments动作", "act set-args"],
+		"body": ["'set-arguments: $0'"],
+		"description": "设置菜单参数"
+	},
+	"动作刷新图标": {
+		"prefix": ["act refresh", "refresh动作"],
+		"body": ["'refresh${1:: IconId}'"],
+		"description": "刷新菜单图标筛选结果"
+	},
+	"动作更新图标": {
+		"prefix": ["act update", "update动作"],
+		"body": ["'update${1:: IconId}'"],
+		"description": "更新图标显示属性"
+	},
+	"动作重置菜单": {
+		"prefix": ["act reset", "reset动作"],
+		"body": ["'reset'"],
+		"description": "重置菜单动画属性缓存"
+	},
+	"动作刷新背包": {
+		"prefix": ["act reload-inventory", "reload-inventory动作"],
+		"body": ["'reload-inventory'"],
+		"description": "刷新玩家背包物品显示"
+	},
+	"动作更新语言": {
+		"prefix": ["act update-lang", "update-lang动作"],
+		"body": ["'update-lang'"],
+		"description": "更新玩家语言环境"
+	},
+	"动作设置Meta": {
+		"prefix": ["act set-meta", "set-meta动作"],
+		"body": ["'set-meta: ${1:key} ${2:value}'"],
+		"description": "设置临时 Meta 数据"
+	},
+	"动作删除Meta": {
+		"prefix": ["act del-meta", "del-meta动作", "act rem-meta"],
+		"body": ["'del-meta: $0'"],
+		"description": "删除临时 Meta 数据"
+	},
+	"动作设置Data": {
+		"prefix": ["act set-data", "set-data动作"],
+		"body": ["'set-data: ${1:key} ${2:value}'"],
+		"description": "设置玩家存储数据"
+	},
+	"动作删除Data": {
+		"prefix": ["act del-data", "del-data动作"],
+		"body": ["'del-data: $0'"],
+		"description": "删除玩家存储数据"
+	},
+	"动作设置GlobalData": {
+		"prefix": ["act set-global-data", "set-global-data动作"],
+		"body": ["'set-global-data: ${1:key} ${2:value}'"],
+		"description": "设置全局本地数据"
+	},
+	"动作删除GlobalData": {
+		"prefix": ["act del-global-data", "del-global-data动作"],
+		"body": ["'del-global-data: $0'"],
+		"description": "删除全局本地数据"
+	},
+	"动作给予物品": {
+		"prefix": ["act give-item", "give-item动作"],
+		"body": ["'give-item: material:${1:DIAMOND},amount:${2:1},name:${3:&bItem}'"],
+		"description": "给予物品"
+	},
+	"动作扣除物品": {
+		"prefix": ["act take-item", "take-item动作"],
+		"body": ["'take-item: material:${1:DIAMOND},amount:${2:1}'"],
+		"description": "扣除物品"
+	},
+	"动作经济": {
+		"prefix": ["act economy", "经济动作"],
+		"body": ["'${1|give-money,take-money,set-money,give-points,take-points,set-points|}: ${2:100}'"],
+		"description": "控制金币或点券"
+	},
+	"动作延时": {
+		"prefix": ["act delay", "delay动作"],
+		"body": ["'delay: ${1:20}'"],
+		"description": "延时执行后续动作"
+	},
+	"动作中断": {
+		"prefix": ["act return", "return动作"],
+		"body": ["'return'"],
+		"description": "中断动作组并返回 false"
+	},
+	"动作JavaScript": {
+		"prefix": ["act js", "js动作"],
+		"body": ["'js: $0'"],
+		"description": "执行 JavaScript 动作"
+	},
+	"动作Jexl": {
+		"prefix": ["act jexl", "jexl动作"],
+		"body": ["'jexl: $0'"],
+		"description": "执行 JEXL 动作"
+	},
+	"动作Kether": {
+		"prefix": ["act ke", "ke动作", "kether动作"],
+		"body": ["'ke: $0'"],
+		"description": "执行 Kether 动作"
+	}
 }

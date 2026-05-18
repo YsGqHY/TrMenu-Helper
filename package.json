@@ -3,7 +3,11 @@
   "displayName": "TrMenu-Helper",
   "description": "TrMenu配置补全",
   "publisher": "hhhhhy",
-  "version": "0.0.5",
+  "version": "0.1.0",
+  "main": "./extension.js",
+  "activationEvents": [
+    "onLanguage:yaml"
+  ],
   "keywords": ["trmenu", "kether", "taboolib"],
   "icon": "images/icon.png",
   "engines": {
@@ -15,13 +19,5 @@
   "repository": {
     "type": "git",
     "url" : "https://github.com/YsGqHY/TrMenu-Helper.git"
-  },
-  "contributes": {
-    "snippets": [
-      {
-        "language": "yaml",
-        "path": "./snippets/TrMenu配置补全.code-snippets"
-      }
-    ]
   }
 }
