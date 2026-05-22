@@ -3,7 +3,7 @@
   "displayName": "TrMenu-Helper",
   "description": "TrMenu配置补全",
   "publisher": "hhhhhy",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "./extension.js",
   "activationEvents": [
     "onLanguage:yaml"
