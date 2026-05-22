@@ -577,7 +577,7 @@ function collectHighlight(entry, pathKeys, key, parentKey, highlights) {
     highlights.root.push(entry.range);
   }
 
-  if (pathKeys[0] === 'icons' && (isInsideIconDisplay(pathKeys) || DISPLAY_CONTAINER_KEYS.has(key) || DISPLAY_KEYS.has(key))) {
+  if (pathKeys[0] === 'icons' && !isInsideCatcherActionConfig(pathKeys) && (isInsideIconDisplay(pathKeys) || DISPLAY_CONTAINER_KEYS.has(key) || DISPLAY_KEYS.has(key))) {
     highlights.display.push(entry.range);
   }
 
@@ -605,7 +605,7 @@ function buildSemanticTokens(entries) {
       tokenType = 'enumMember';
     } else if (pathKeys[0] === 'icons' && ACTION_CONTAINER_KEYS.has(key)) {
       tokenType = 'function';
-    } else if (pathKeys[0] === 'icons' && (isInsideIconDisplay(pathKeys) || DISPLAY_KEYS.has(key))) {
+    } else if (pathKeys[0] === 'icons' && !isInsideCatcherActionConfig(pathKeys) && (isInsideIconDisplay(pathKeys) || DISPLAY_KEYS.has(key))) {
       tokenType = 'property';
     }
 
@@ -630,6 +630,10 @@ function isDisplayFieldOutsideDisplay(pathKeys, key) {
     return false;
   }
 
+  if (isInsideCatcherActionConfig(pathKeys)) {
+    return false;
+  }
+
   return !isInsideIconDisplay(pathKeys) && isInsideIconBody(pathKeys);
 }
 
@@ -638,7 +642,20 @@ function isInsideIconDisplay(pathKeys) {
     return false;
   }
 
-  return pathKeys.some((key) => DISPLAY_CONTAINER_KEYS.has(key));
+  return pathKeys.some((key) => DISPLAY_CONTAINER_KEYS.has(key)) && !isInsideCatcherActionConfig(pathKeys);
+}
+
+function isInsideCatcherActionConfig(pathKeys) {
+  if (pathKeys[0] !== 'icons') {
+    return false;
+  }
+
+  const catcherIndex = pathKeys.lastIndexOf('catcher');
+  if (catcherIndex < 3 || catcherIndex === pathKeys.length - 1) {
+    return false;
+  }
+
+  return ACTION_CONTAINER_KEYS.has(pathKeys[catcherIndex - 2]) && VALID_CLICK_TYPES.has(pathKeys[catcherIndex - 1]);
 }
 
 function isInsideIconBody(pathKeys) {
