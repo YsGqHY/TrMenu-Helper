@@ -57,6 +57,12 @@ const DISPLAY_CONTAINER_KEYS = new Set(['display', 'displayes', 'displays']);
 // 仅匹配图标动作容器，故意不含 click，避免与 Events.Click 冲突
 const ACTION_CONTAINER_KEYS = new Set(['actions', 'action']);
 const ICON_ACTION_KEYS = new Set(['actions', 'action']);
+const CONFIG_SECTION = 'trmenuHelper';
+const CUSTOM_NODE_DIAGNOSTIC_CODE = 'trmenu-helper.custom-node-display-field';
+const CUSTOM_NODE_IGNORE_FILES_CONFIG = 'customNodeDiagnostics.ignoredFiles';
+const CUSTOM_NODE_IGNORE_DIRECTORIES_CONFIG = 'customNodeDiagnostics.ignoredDirectories';
+const CUSTOM_NODE_IGNORE_FILE_COMMAND = 'trmenu-helper.ignoreCustomNodeDiagnosticsForFile';
+const CUSTOM_NODE_IGNORE_DIRECTORY_COMMAND = 'trmenu-helper.ignoreCustomNodeDiagnosticsForDirectory';
 const EVENT_KEYS = new Set(['open', 'close', 'click']);
 const VALID_CLICK_TYPES = new Set([
   'all',
@@ -158,15 +164,69 @@ function activate(context) {
     SEMANTIC_LEGEND
   );
 
+  const customNodeCodeActionProvider = vscode.languages.registerCodeActionsProvider(
+    { language: 'yaml', scheme: 'file' },
+    {
+      provideCodeActions(document, range, context) {
+        if (!isYamlDocument(document) || !isTrMenuMenuFile(document)) {
+          return [];
+        }
+
+        const customNodeDiagnostics = context.diagnostics.filter(isCustomNodeDiagnostic);
+        if (customNodeDiagnostics.length === 0) {
+          return [];
+        }
+
+        return createCustomNodeIgnoreCodeActions(document.uri, customNodeDiagnostics);
+      }
+    },
+    { providedCodeActionKinds: [vscode.CodeActionKind.QuickFix] }
+  );
+
+  const customNodeHoverProvider = vscode.languages.registerHoverProvider(
+    { language: 'yaml', scheme: 'file' },
+    {
+      provideHover(document, position) {
+        if (!isYamlDocument(document) || !isTrMenuMenuFile(document)) {
+          return undefined;
+        }
+
+        const diagnostic = filterIgnoredCustomNodeDiagnostics(document, getAnalysis(document).diagnostics)
+          .find((item) => isCustomNodeDiagnostic(item) && item.range.contains(position));
+        if (!diagnostic) {
+          return undefined;
+        }
+
+        return createCustomNodeHover(document.uri, diagnostic.range);
+      }
+    }
+  );
+
+  const ignoreFileCommand = vscode.commands.registerCommand(CUSTOM_NODE_IGNORE_FILE_COMMAND, async (uri) => {
+    await ignoreCustomNodeDiagnosticsForFile(uri, diagnostics);
+  });
+  const ignoreDirectoryCommand = vscode.commands.registerCommand(CUSTOM_NODE_IGNORE_DIRECTORY_COMMAND, async (uri) => {
+    await ignoreCustomNodeDiagnosticsForDirectory(uri, diagnostics);
+  });
+
   context.subscriptions.push(
     completionProvider,
     semanticProvider,
+    customNodeCodeActionProvider,
+    customNodeHoverProvider,
+    ignoreFileCommand,
+    ignoreDirectoryCommand,
     diagnostics,
     decorations.root,
     decorations.display,
     decorations.action,
     decorations.dialog,
     vscode.workspace.onDidOpenTextDocument((document) => updateDiagnostics(document, diagnostics)),
+    vscode.workspace.onDidChangeConfiguration((event) => {
+      if (event.affectsConfiguration(CONFIG_SECTION)) {
+        refreshDiagnostics(diagnostics);
+      }
+    }),
     vscode.workspace.onDidChangeTextDocument((event) => {
       invalidateCache(event.document);
       updateDiagnostics(event.document, diagnostics);
@@ -207,7 +267,11 @@ function updateDiagnostics(document, collection) {
     return;
   }
 
-  collection.set(document.uri, getAnalysis(document).diagnostics);
+  collection.set(document.uri, filterIgnoredCustomNodeDiagnostics(document, getAnalysis(document).diagnostics));
+}
+
+function refreshDiagnostics(collection) {
+  vscode.workspace.textDocuments.forEach((document) => updateDiagnostics(document, collection));
 }
 
 function updateVisibleDecorations(decorations) {
@@ -340,9 +404,9 @@ function analyzeDocument(document) {
     }
 
     if (isDisplayFieldOutsideDisplay(pathKeys, key)) {
-      diagnostics.push(createDiagnostic(
+      diagnostics.push(createCustomNodeDiagnostic(
         entry,
-        `图标显示字段 ${entry.key} 应写在 display: 节点中。`,
+        `图标显示字段 ${entry.key} 应写在 display: 节点中。如这里是 TrMenu 自定义 node 节点，可通过快速修复忽略该提醒。`,
         vscode.DiagnosticSeverity.Error
       ));
     }
@@ -669,6 +733,157 @@ function isInsideIconBody(pathKeys) {
 
 function createDiagnostic(entry, message, severity) {
   return new vscode.Diagnostic(entry.range, message, severity);
+}
+
+function createCustomNodeDiagnostic(entry, message, severity) {
+  const diagnostic = createDiagnostic(entry, message, severity);
+  diagnostic.code = CUSTOM_NODE_DIAGNOSTIC_CODE;
+  diagnostic.source = 'TrMenu Helper';
+  return diagnostic;
+}
+
+function isCustomNodeDiagnostic(diagnostic) {
+  if (!diagnostic) {
+    return false;
+  }
+
+  if (typeof diagnostic.code === 'string') {
+    return diagnostic.code === CUSTOM_NODE_DIAGNOSTIC_CODE;
+  }
+
+  return diagnostic.code && diagnostic.code.value === CUSTOM_NODE_DIAGNOSTIC_CODE;
+}
+
+function createCustomNodeIgnoreCodeActions(uri, diagnostics) {
+  return [
+    createCustomNodeIgnoreCodeAction(
+      'TrMenu: 忽略此文件的自定义 node 提醒',
+      CUSTOM_NODE_IGNORE_FILE_COMMAND,
+      uri,
+      diagnostics,
+      true
+    ),
+    createCustomNodeIgnoreCodeAction(
+      'TrMenu: 忽略当前目录下所有 YAML 文件的自定义 node 提醒',
+      CUSTOM_NODE_IGNORE_DIRECTORY_COMMAND,
+      uri,
+      diagnostics,
+      false
+    )
+  ];
+}
+
+function createCustomNodeIgnoreCodeAction(title, command, uri, diagnostics, isPreferred) {
+  const action = new vscode.CodeAction(title, vscode.CodeActionKind.QuickFix);
+  action.command = { title, command, arguments: [uri] };
+  action.diagnostics = diagnostics;
+  action.isPreferred = isPreferred;
+  return action;
+}
+
+function createCustomNodeHover(uri, range) {
+  const markdown = new vscode.MarkdownString();
+  markdown.isTrusted = true;
+  const paragraphBreak = String.fromCharCode(10, 10);
+  markdown.appendMarkdown('TrMenu 允许在配置任意位置编写任意名称的自定义 node 节点。');
+  markdown.appendMarkdown(paragraphBreak);
+  markdown.appendMarkdown('如果这里是自定义 node，可以关闭当前文件或当前目录 YAML 文件中的此类提醒。');
+  markdown.appendMarkdown(paragraphBreak);
+  markdown.appendMarkdown(`[忽略此文件](command:${CUSTOM_NODE_IGNORE_FILE_COMMAND}?${encodeCommandUri(uri)})`);
+  markdown.appendMarkdown(' | ');
+  markdown.appendMarkdown(`[忽略当前目录 YAML](command:${CUSTOM_NODE_IGNORE_DIRECTORY_COMMAND}?${encodeCommandUri(uri)})`);
+  return new vscode.Hover(markdown, range);
+}
+
+function encodeCommandUri(uri) {
+  return encodeURIComponent(JSON.stringify([uri.toString()]));
+}
+
+async function ignoreCustomNodeDiagnosticsForFile(uri, collection) {
+  const targetUri = resolveCommandUri(uri);
+  if (!targetUri) {
+    return;
+  }
+
+  await addConfigListValue(CUSTOM_NODE_IGNORE_FILES_CONFIG, normalizeFsPath(targetUri.fsPath));
+  refreshDiagnostics(collection);
+}
+
+async function ignoreCustomNodeDiagnosticsForDirectory(uri, collection) {
+  const targetUri = resolveCommandUri(uri);
+  if (!targetUri) {
+    return;
+  }
+
+  await addConfigListValue(CUSTOM_NODE_IGNORE_DIRECTORIES_CONFIG, normalizeFsPath(path.dirname(targetUri.fsPath)));
+  refreshDiagnostics(collection);
+}
+
+function resolveCommandUri(uri) {
+  if (uri && uri.scheme === 'file') {
+    return uri;
+  }
+
+  if (typeof uri === 'string') {
+    try {
+      const parsed = vscode.Uri.parse(uri);
+      if (parsed.scheme === 'file') {
+        return parsed;
+      }
+    } catch (error) {
+      // Ignore malformed command arguments and fall back to the active editor.
+    }
+  }
+
+  const editor = vscode.window.activeTextEditor;
+  return editor && editor.document && editor.document.uri.scheme === 'file' ? editor.document.uri : undefined;
+}
+
+async function addConfigListValue(configKey, value) {
+  const config = vscode.workspace.getConfiguration(CONFIG_SECTION);
+  const current = normalizeConfigPathList(config.get(configKey));
+  if (current.includes(value)) {
+    return;
+  }
+
+  const target = vscode.workspace.workspaceFolders
+    ? vscode.ConfigurationTarget.Workspace
+    : vscode.ConfigurationTarget.Global;
+  await config.update(configKey, current.concat(value), target);
+}
+
+function filterIgnoredCustomNodeDiagnostics(document, diagnostics) {
+  if (!diagnostics.some(isCustomNodeDiagnostic) || !isCustomNodeDiagnosticsIgnored(document)) {
+    return diagnostics;
+  }
+
+  return diagnostics.filter((diagnostic) => !isCustomNodeDiagnostic(diagnostic));
+}
+
+function isCustomNodeDiagnosticsIgnored(document) {
+  if (!document || document.uri.scheme !== 'file') {
+    return false;
+  }
+
+  const documentPath = normalizeFsPath(document.uri.fsPath);
+  const documentDirectory = normalizeFsPath(path.dirname(document.uri.fsPath));
+  const config = vscode.workspace.getConfiguration(CONFIG_SECTION);
+  const ignoredFiles = normalizeConfigPathList(config.get(CUSTOM_NODE_IGNORE_FILES_CONFIG));
+  const ignoredDirectories = normalizeConfigPathList(config.get(CUSTOM_NODE_IGNORE_DIRECTORIES_CONFIG));
+
+  return ignoredFiles.includes(documentPath) || ignoredDirectories.includes(documentDirectory);
+}
+
+function normalizeConfigPathList(value) {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return Array.from(new Set(value.filter((item) => typeof item === 'string').map(normalizeFsPath).filter(Boolean)));
+}
+
+function normalizeFsPath(fsPath) {
+  return String(fsPath || '').replace(/\\/g, '/').replace(/\/$/, '').toLowerCase();
 }
 
 function createDocumentDiagnostic(document, range, message, severity) {

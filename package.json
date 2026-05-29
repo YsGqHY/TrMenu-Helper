@@ -3,7 +3,7 @@
   "displayName": "TrMenu-Helper",
   "description": "TrMenu配置补全",
   "publisher": "hhhhhy",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "./extension.js",
   "activationEvents": [
     "onLanguage:yaml"
@@ -16,6 +16,29 @@
   "categories": [
     "Snippets"
   ],
+  "contributes": {
+    "configuration": {
+      "title": "TrMenu Helper",
+      "properties": {
+        "trmenuHelper.customNodeDiagnostics.ignoredFiles": {
+          "type": "array",
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "description": "已忽略自定义 node 显示字段诊断的 TrMenu YAML 文件路径。"
+        },
+        "trmenuHelper.customNodeDiagnostics.ignoredDirectories": {
+          "type": "array",
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "description": "已忽略自定义 node 显示字段诊断的目录；目录内的 YAML 文件不再提示该诊断。"
+        }
+      }
+    }
+  },
   "repository": {
     "type": "git",
     "url" : "https://github.com/YsGqHY/TrMenu-Helper.git"
