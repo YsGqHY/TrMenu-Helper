@@ -8,6 +8,7 @@ test/
 
 # 扩展打包产物
 *.vsix
+vsix-build-*/
 
 # 编辑器/系统缓存
 .vscode-test/
